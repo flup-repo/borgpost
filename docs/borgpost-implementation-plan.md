@@ -43,10 +43,11 @@
     - Multiple slots per day (e.g., 9 AM, 2 PM, 7 PM)
     - Day-specific patterns (weekdays, weekends, specific days)
     - Category assignment per slot (optional)
-  - **Auto-Fill Engine**: Intelligent background worker
-    - Automatically generates content to fill empty future slots (7 days ahead)
-    - Category rotation based on priority and last-posted time
-    - Prompt selection strategy (random, round-robin, performance-based)
+  - **Real-Time Scheduler**:
+    - No pre-filling of database slots.
+    - Checks configured schedule slots every minute against current time.
+    - Triggers immediate content generation and posting when a slot matches.
+    - Ensures idempotency (one post per slot per day).
   - **Manual Queue Management**:
     - Add posts manually to specific slots
     - Edit generated posts before scheduling
@@ -369,7 +370,10 @@ BullMQ provides Redis-backed, reliable job processing:
   }
   ```
   
-- `PostExecutorProcessor`: Runs every minute, publishes scheduled posts
+- `PostExecutorProcessor`: Runs every minute, handles "Just-In-Time" generation and publishing
+  - Triggers generation using assigned prompt and category
+  - Publishes to X.com immediately after generation
+  - Handles retry logic for both generation and posting errors
 - `RssRefreshProcessor`: Runs every hour, fetches new RSS content  
 - `MetricsSyncProcessor`: Runs every 6 hours, updates engagement metrics
 - `CleanupProcessor`: Runs daily, archives old posts
@@ -1263,6 +1267,18 @@ POST /api/sources/ingest
 - **E2E Tests**: Playwright or Cypress (optional)
 - **Type Safety**: TypeScript strict mode
 
+## 11. Infrastructure Requirements
+
+### 11.1 Redis
+- **Requirement**: Redis is strictly required for job queue management (BullMQ).
+- **Local Development**: Must run via `docker-compose up -d redis` or local install.
+- **Production**: Managed Redis instance.
+- **Configuration**: `REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD`.
+
+### 11.2 Timezone Configuration
+- **Requirement**: Scheduler relies on system local time to match database slots.
+- **Consistency**: Ensure database, backend, and frontend (slot creation) align on timezone handling (currently Local System Time).
+
 ### 10.3 Manual Testing Checklist
 - [ ] End-to-end user journey (create category → add prompt → create slot → auto-fill → post)
 - [ ] Test all CRUD operations
@@ -1271,9 +1287,9 @@ POST /api/sources/ingest
 - [ ] Verify RSS ingestion and content summarization
 - [ ] Check analytics accuracy
 
-## 11. Maintenance & Operations
+## 12. Maintenance & Operations
 
-### 11.1 Logging Strategy (Winston)
+### 12.1 Logging Strategy (Winston)
 - **Location**: `logs/borgpost-{date}.log` (daily rotation, keep 30 days)
 - **Configuration**:
   ```typescript
@@ -1305,13 +1321,13 @@ POST /api/sources/ingest
   - `debug`: Detailed flow for troubleshooting
 - **Never Log**: API keys, tokens, passwords, sensitive user data
 
-### 11.2 Backup & Recovery
+### 12.2 Backup & Recovery
 - **Database Backups**: Automated daily backup (pg_dump or cloud provider)
 - **Configuration Export**: Endpoint to export all configs as JSON
 - **Post History**: Archive old posts (>6 months) to separate table
 - **Disaster Recovery**: Document restoration process
 
-### 11.3 Monitoring & Alerts
+### 12.3 Monitoring & Alerts
 - **Health Checks**: Custom endpoint `GET /health`
   ```typescript
   @Controller('health')
@@ -1346,7 +1362,7 @@ POST /api/sources/ingest
   - Optional: Grafana + Prometheus for detailed metrics
   - BullMQ queue monitoring
 
-### 11.4 Routine Maintenance
+### 12.4 Routine Maintenance
 - **Weekly**:
   - Review error logs
   - Check post success rate
@@ -1361,7 +1377,7 @@ POST /api/sources/ingest
   - Review and update prompts based on performance
   - Audit and rotate API keys
 
-### 11.5 Troubleshooting Guide
+### 12.5 Troubleshooting Guide
 | Issue | Diagnosis | Solution |
 |-------|-----------|----------|
 | Posts not publishing | Check `logs/borgpost.log` for errors | Verify X.com API credentials, check rate limits |
@@ -1370,16 +1386,16 @@ POST /api/sources/ingest
 | Queue not auto-filling | Check Quartz job status | Manually trigger `/api/slots/auto-fill` |
 | High memory usage | Check Actuator metrics | Reduce cache size or restart application |
 
-## 12. Future Enhancements
+## 13. Future Enhancements
 
-### 12.1 Near-Term (3-6 months)
+### 13.1 Near-Term (3-6 months)
 - Multi-user support with authentication
 - Post scheduling preview/calendar view
 - A/B testing for prompts (track which prompts perform best)
 - Image generation integration (DALL-E, Stable Diffusion)
 - More social platforms (LinkedIn, Bluesky, Mastodon)
 
-### 12.2 Long-Term (6-12 months)
+### 13.2 Long-Term (6-12 months)
 - AI-powered optimal posting time recommendations
 - Automatic hashtag suggestions
 - Competitor analysis and trend detection

@@ -6,14 +6,15 @@ import { ScheduleService } from './schedule.service';
 import { ScheduleController } from './schedule.controller';
 import { ScheduleCronService } from './schedule.cron';
 import { Post } from '../posts/posts.entity';
+import { PromptsModule } from '../prompts/prompts.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ScheduleSlot, Post]),
     BullModule.registerQueue(
-      { name: 'post-executor' },
-      { name: 'auto-fill' }
+      { name: 'post-executor' }
     ),
+    PromptsModule
   ],
   controllers: [ScheduleController],
   providers: [ScheduleService, ScheduleCronService],
