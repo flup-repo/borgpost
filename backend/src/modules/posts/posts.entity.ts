@@ -7,6 +7,7 @@ import { PostMetric } from '../analytics/post-metric.entity';
 export enum PostStatus {
   DRAFT = 'DRAFT',
   SCHEDULED = 'SCHEDULED',
+  WAITING_GENERATION = 'WAITING_GENERATION',
   POSTED = 'POSTED',
   FAILED = 'FAILED',
   APPROVED = 'APPROVED'
@@ -17,7 +18,7 @@ export class Post {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('text')
+  @Column('text', { nullable: true })
   content: string;
 
   @Column({ type: 'varchar', length: 20 })

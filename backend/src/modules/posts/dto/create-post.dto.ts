@@ -3,8 +3,8 @@ import { PostStatus } from '../posts.entity';
 
 export class CreatePostDto {
   @IsString()
-  @IsNotEmpty()
-  content: string;
+  @IsOptional()
+  content?: string;
 
   @IsEnum(PostStatus)
   @IsOptional()
