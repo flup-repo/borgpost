@@ -9,19 +9,16 @@
 
 ---
 
-## 1. Git Workflow (Gitflow)
+## 1. Git Workflow
 
 ### 1.1 Branch Strategy
 
-**Main Branches**:
-- `main` - Production-ready code only. Protected branch.
-- `develop` - Integration branch for features. Protected branch.
+**Main Branch**:
+- `main` - Production-ready code. Protected branch.
 
 **Supporting Branches**:
 - `feature/*` - New features and enhancements
-- `bugfix/*` - Bug fixes for develop branch
-- `hotfix/*` - Urgent fixes for production (branches from main)
-- `release/*` - Release preparation (branches from develop)
+- `bugfix/*` - Bug fixes
 - `chore/*` - Maintenance tasks (dependency updates, tooling)
 - `docs/*` - Documentation updates
 
@@ -33,50 +30,48 @@
 ```
 feature/BP-123-add-twitter-integration
 bugfix/BP-456-fix-post-scheduling
-hotfix/BP-789-critical-api-error
 chore/BP-012-update-dependencies
 docs/BP-034-update-api-documentation
-release/v1.0.0
 ```
 
 **Rules**:
 - Use lowercase and hyphens (kebab-case)
 - Keep descriptions short but meaningful (max 50 chars)
 - Include ticket/issue number if applicable
-- Never commit directly to `main` or `develop`
+- Never commit directly to `main`
 
 ### 1.3 Branch Lifecycle
 
 1. **Create Branch**:
    ```bash
-   git checkout develop
-   git pull origin develop
+   git checkout main
+   git pull origin main
    git checkout -b feature/BP-123-add-rss-parser
    ```
 
 2. **Work on Feature**:
    - Make atomic commits with clear messages
    - Push regularly to remote
-   - Keep branch up-to-date with develop
+   - Keep branch up-to-date with main
 
-3. **Update from Develop** (if branch is long-lived):
+3. **Update from Main**:
    ```bash
-   git checkout develop
-   git pull origin develop
+   git checkout main
+   git pull origin main
    git checkout feature/BP-123-add-rss-parser
-   git rebase develop
+   git rebase main
    ```
 
 4. **Create Pull Request**:
-   - Target: `develop` (or `main` for hotfixes)
+   - Target: `main`
    - Fill out PR template completely
    - Request reviews from maintainers
    - Ensure CI/CD checks pass
 
 5. **After Merge**:
    ```bash
-   git checkout develop
-   git pull origin develop
+   git checkout main
+   git pull origin main
    git branch -d feature/BP-123-add-rss-parser
    ```
 
@@ -87,14 +82,7 @@ release/v1.0.0
 - Requires status checks to pass
 - No force pushes allowed
 - No direct commits allowed
-- Only merge from `release/*` or `hotfix/*`
-
-**`develop` Branch**:
-- Requires pull request reviews (min 1 approval)
-- Requires status checks to pass
-- No force pushes allowed
-- No direct commits allowed
-- Only merge from `feature/*`, `bugfix/*`, `chore/*`
+- Only merge from `feature/*`, `bugfix/*`, `chore/*`, `docs/*`
 
 ---
 
@@ -901,7 +889,7 @@ npm audit fix
 
 ### 12.1 Never Do This
 
-❌ **Commit directly to `main` or `develop`**
+❌ **Commit directly to `main`**
 ❌ **Force push to shared branches**
 ❌ **Commit secrets or API keys**
 ❌ **Merge without PR review**
@@ -928,65 +916,20 @@ npm audit fix
 
 ## 13. Release Process
 
-### 13.1 Release Branch Workflow
-
-1. **Create release branch** from `develop`:
-   ```bash
-   git checkout develop
-   git pull origin develop
-   git checkout -b release/v1.2.0
-   ```
-
-2. **Prepare release**:
+1. **Prepare Release**:
    - Update version in `package.json`
    - Update CHANGELOG.md
-   - Run full test suite
-   - Fix any bugs found
+   - Create a PR with these changes (e.g., `chore/release-v1.2.0`)
 
-3. **Merge to main**:
-   ```bash
-   git checkout main
-   git merge --no-ff release/v1.2.0
-   git tag -a v1.2.0 -m "Release version 1.2.0"
-   git push origin main --tags
-   ```
-
-4. **Merge back to develop**:
-   ```bash
-   git checkout develop
-   git merge --no-ff release/v1.2.0
-   git push origin develop
-   ```
-
-5. **Delete release branch**:
-   ```bash
-   git branch -d release/v1.2.0
-   ```
-
-### 13.2 Hotfix Workflow
-
-1. **Create hotfix branch** from `main`:
-   ```bash
-   git checkout main
-   git checkout -b hotfix/v1.2.1-critical-bug
-   ```
-
-2. **Fix the issue** and test thoroughly
-
-3. **Merge to main**:
-   ```bash
-   git checkout main
-   git merge --no-ff hotfix/v1.2.1-critical-bug
-   git tag -a v1.2.1 -m "Hotfix: Critical bug"
-   git push origin main --tags
-   ```
-
-4. **Merge to develop**:
-   ```bash
-   git checkout develop
-   git merge --no-ff hotfix/v1.2.1-critical-bug
-   git push origin develop
-   ```
+2. **Finalize Release**:
+   - Merge preparation PR to `main`
+   - Create a Git tag:
+     ```bash
+     git checkout main
+     git pull origin main
+     git tag -a v1.2.0 -m "Release version 1.2.0"
+     git push origin v1.2.0
+     ```
 
 ---
 
@@ -1033,8 +976,8 @@ Every PR must pass:
 ### 15.2 CD Pipeline
 
 Deployments to:
-- **Staging**: Automatic on merge to `develop`
-- **Production**: Automatic on merge to `main` (with approval gate)
+- **Staging**: Automatic on PR (Preview Environment)
+- **Production**: Automatic on merge to `main`
 
 ---
 
