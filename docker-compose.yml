@@ -1,0 +1,41 @@
+version: '3'
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    environment:
+      - REDIS_HOST=redis
+      - DATABASE_TYPE=postgres
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_USERNAME=borgpost_user
+      - DATABASE_PASSWORD=secure_password_here
+      - DATABASE_NAME=borgpost
+    depends_on:
+      - postgres
+      - redis
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: borgpost_user
+      POSTGRES_PASSWORD: secure_password_here
+      POSTGRES_DB: borgpost
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgdata:

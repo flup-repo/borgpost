@@ -1018,74 +1018,74 @@ POST /api/sources/ingest
 ### Phase 1: Foundation (Week 1-2)
 
 **Step 1: Project Setup**
-- [ ] Initialize NestJS project: `nest new borgpost-backend`
-- [ ] Setup TypeScript configuration (`tsconfig.json`)
-- [ ] Install core dependencies (`@nestjs/typeorm`, `typeorm`, `pg`, `sqlite3`)
-- [ ] Configure `.env` file with environment variables
-- [ ] Setup project structure (modules, services, controllers)
-- [ ] Create `.gitignore` and initialize Git repository
-- [ ] Install Redis for job queues (Docker or local)
+- [x] Initialize NestJS project: `nest new borgpost-backend`
+- [x] Setup TypeScript configuration (`tsconfig.json`)
+- [x] Install core dependencies (`@nestjs/typeorm`, `typeorm`, `pg`, `sqlite3`)
+- [x] Configure `.env` file with environment variables
+- [x] Setup project structure (modules, services, controllers)
+- [x] Create `.gitignore` and initialize Git repository
+- [x] Install Redis for job queues (Docker or local)
 
 **Step 2: Database & Core Entities**
-- [ ] Setup TypeORM configuration (`ormconfig.ts`)
-- [ ] Create TypeORM entities with decorators:
+- [x] Setup TypeORM configuration (`ormconfig.ts`)
+- [x] Create TypeORM entities with decorators:
   - `Category.entity.ts`
   - `Prompt.entity.ts`
   - `ScheduleSlot.entity.ts`
   - `Post.entity.ts`
   - `Configuration.entity.ts`
-- [ ] Generate initial migration: `npm run migration:generate`
+- [ ] Generate initial migration: `npm run migration:generate` (Sync enabled for dev)
 - [ ] Run migrations: `npm run migration:run`
 - [ ] Create database seeder for sample data (categories, prompts)
-- [ ] Test database connection
+- [x] Test database connection
 
 **Step 3: Basic REST API**
-- [ ] Generate modules: `nest g module posts categories prompts`
-- [ ] Generate controllers: `nest g controller posts categories prompts`
-- [ ] Generate services: `nest g service posts categories prompts`
-- [ ] Implement CRUD operations in services (using TypeORM repositories)
-- [ ] Create DTOs with `class-validator` decorators
-- [ ] Add validation pipes globally in `main.ts`
-- [ ] Test endpoints with Postman/curl or Thunder Client
+- [x] Generate modules: `nest g module posts categories prompts`
+- [x] Generate controllers: `nest g controller posts categories prompts`
+- [x] Generate services: `nest g service posts categories prompts`
+- [x] Implement CRUD operations in services (using TypeORM repositories)
+- [x] Create DTOs with `class-validator` decorators
+- [x] Add validation pipes globally in `main.ts`
+- [x] Test endpoints with Postman/curl or Thunder Client
 
 ### Phase 2: Frontend Foundation (Week 2-3)
 
 **Step 4: React Setup**
-- [ ] Initialize Vite + React + TypeScript project
-- [ ] Install dependencies (React Router, TanStack Query, Shadcn/UI, Tailwind)
-- [ ] Setup Shadcn/UI components (install CLI and configure)
-- [ ] Configure Axios API client with interceptors
-- [ ] Create basic layout (AppLayout, Sidebar, Header)
+- [x] Initialize Vite + React + TypeScript project
+- [x] Install dependencies (React Router, TanStack Query, Shadcn/UI, Tailwind)
+- [x] Setup Shadcn/UI components (install CLI and configure)
+- [x] Configure Axios API client with interceptors
+- [x] Create basic layout (AppLayout, Sidebar, Header)
 
 **Step 5: Core UI Components**
-- [ ] Create `Dashboard` page (placeholder widgets)
-- [ ] Create `CategoryManager` component with CRUD forms
-- [ ] Create `PromptLibrary` component with CRUD forms
-- [ ] Implement React Query hooks for API calls
-- [ ] Add loading states and error handling
+- [x] Create `Dashboard` page (placeholder widgets)
+- [x] Create `CategoryManager` component with CRUD forms
+- [x] Create `PromptLibrary` component with CRUD forms
+- [x] Implement React Query hooks for API calls
+- [x] Add loading states and error handling
 
 ### Phase 3: Content Generation (Week 3-4)
 
 **Step 6: LLM Integration**
-- [ ] Install dependencies: `npm install @google/generative-ai axios axios-retry`
-- [ ] Create LLM service module: `nest g module services/llm`
-- [ ] Create `LlmService` with Gemini API client:
+- [x] Install dependencies: `npm install @google/generative-ai axios axios-retry`
+- [x] Create LLM service module: `nest g module services/llm`
+- [x] Create `LlmService` with Gemini API client:
   ```typescript
   import { GoogleGenerativeAI } from '@google/generative-ai';
   ```
-- [ ] Implement prompt template variable replacement (e.g., `{date}`, `{news_summary}`)
-- [ ] Create `ContentGeneratorService` with generation orchestration
+- [x] Implement prompt template variable replacement (e.g., `{date}`, `{news_summary}`)
+- [x] Create `ContentGeneratorService` with generation orchestration
 - [ ] Add uniqueness validation (compare with last N posts)
-- [ ] Implement rate limit handling and exponential backoff
+- [x] Implement rate limit handling and exponential backoff
 - [ ] Add fallback model switching (Pro → Flash)
 - [ ] Test generation with sample prompts
 
 **Step 7: RSS/URL Ingestion**
-- [ ] Install dependencies: `npm install rss-parser cheerio @mozilla/readability`
-- [ ] Create ingestion service: `nest g service services/ingestion`
-- [ ] Implement RSS feed parsing with `rss-parser`
+- [x] Install dependencies: `npm install rss-parser cheerio @mozilla/readability`
+- [x] Create ingestion service: `nest g service services/ingestion`
+- [x] Implement RSS feed parsing with `rss-parser`
 - [ ] Implement HTML article scraping with `cheerio` and `readability`
-- [ ] Create `SourceContent` and `RssFeed` entities
+- [x] Create `SourceContent` and `RssFeed` entities
 - [ ] Add RSS feed management endpoints
 - [ ] Create cron job for hourly RSS refresh using `@nestjs/schedule`
 - [ ] Test RSS fetching and content extraction
@@ -1093,14 +1093,14 @@ POST /api/sources/ingest
 ### Phase 4: Scheduling & Queue (Week 4-5)
 
 **Step 8: BullMQ Job Queue Setup**
-- [ ] Install dependencies: `npm install @nestjs/bull bullmq ioredis`
-- [ ] Configure BullMQ with Redis connection
-- [ ] Create `ScheduleSlot` module and management endpoints
+- [x] Install dependencies: `npm install @nestjs/bull bullmq ioredis`
+- [x] Configure BullMQ with Redis connection
+- [x] Create `ScheduleSlot` module and management endpoints
 - [ ] Implement slot pattern parsing (cron-like patterns, day of week)
-- [ ] Create queue definitions in app module
+- [x] Create queue definitions in app module
 
 **Step 9: Auto-Fill Queue Logic**
-- [ ] Create `AutoFillQueueProcessor` with `@Processor` decorator
+- [x] Create `AutoFillQueueProcessor` with `@Processor` decorator
 - [ ] Add cron job to trigger auto-fill every hour
 - [ ] Implement category selection strategy (priority-based rotation)
 - [ ] Implement prompt selection strategy (weighted random)
@@ -1120,9 +1120,9 @@ POST /api/sources/ingest
 ### Phase 5: X.com Integration (Week 5-6)
 
 **Step 11: Twitter API Setup**
-- [ ] Install dependency: `npm install twitter-api-v2`
-- [ ] Create `TwitterService` with OAuth 1.0a configuration
-- [ ] Initialize TwitterApi client:
+- [x] Install dependency: `npm install twitter-api-v2`
+- [x] Create `TwitterService` with OAuth 1.0a configuration
+- [x] Initialize TwitterApi client:
   ```typescript
   import { TwitterApi } from 'twitter-api-v2';
   const client = new TwitterApi({
@@ -1132,7 +1132,7 @@ POST /api/sources/ingest
     accessSecret: process.env.TWITTER_ACCESS_SECRET,
   });
   ```
-- [ ] Implement single tweet posting method
+- [x] Implement single tweet posting method
 - [ ] Add connection test endpoint
 - [ ] Test with sample tweets (use test account)
 
@@ -1187,7 +1187,7 @@ POST /api/sources/ingest
 ### Phase 7: Deployment (Week 7-8)
 
 **Step 18: Docker Setup**
-- [ ] Create `Dockerfile` for NestJS backend (multi-stage build):
+- [x] Create `Dockerfile` for NestJS backend (multi-stage build):
   ```dockerfile
   FROM node:20-alpine AS builder
   WORKDIR /app
@@ -1202,8 +1202,8 @@ POST /api/sources/ingest
   COPY --from=builder /app/node_modules ./node_modules
   CMD ["node", "dist/main.js"]
   ```
-- [ ] Create `Dockerfile` for React frontend (nginx serving)
-- [ ] Create `docker-compose.yml` with PostgreSQL + Redis
+- [x] Create `Dockerfile` for React frontend (nginx serving)
+- [x] Create `docker-compose.yml` with PostgreSQL + Redis
 - [ ] Test local Docker deployment with `docker-compose up`
 
 **Step 19: Production Database**
